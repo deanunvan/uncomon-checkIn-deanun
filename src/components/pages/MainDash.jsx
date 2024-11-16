@@ -5,11 +5,14 @@ import 'react-datepicker/dist/react-datepicker.css';
 import profile from '../images/profile.png';
 import './Pages.css';
 
-export const Home = () => {
+export const MainDash = () => {
   const [startDate, setStartDate] = useState(new Date());
-  
-  // Sample data with unique IDs
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterDept, setFilterDept] = useState('All Departments');
+
+  // Employee data with unique IDs
   const employees = [
+    { id: 1, date: '13/09', name: 'Dylan R', role: 'Dev', type: 'Full-Time', status: 'Present', checkIn: '10:15 AM', checkOut: '04:00 PM', overtime: '0h' },
     { id: 2, date: '13/09', name: 'Deanunvan T', role: 'Dev', type: 'Full-Time', status: 'Late', checkIn: '10:15 AM', checkOut: '04:00 PM', overtime: '0h' },
     { id: 3, date: '13/09', name: 'Wisdom B', role: 'Dev', type: 'Full-Time', status: 'Present', checkIn: '09:00 AM', checkOut: '05:00 PM', overtime: '1h' },
     { id: 4, date: '13/09', name: 'Daniel M', role: 'Dev', type: 'Full-Time', status: 'Present', checkIn: '09:00 AM', checkOut: '04:00 PM', overtime: '0h' },
@@ -35,60 +38,88 @@ export const Home = () => {
     { id: 24, date: '13/09', name: 'Tashinga M', role: 'Design', type: 'Full-Time', status: 'Absent', checkIn: '09:00 AM', checkOut: '06:00 PM', overtime: '2h' },
   ];
 
-  
+  // Filter and search logic
+  const filteredEmployees = employees.filter((employee) => {
+    const matchesSearch = employee.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesDept = filterDept === 'All Departments' || employee.role === filterDept;
+    return matchesSearch && matchesDept;
+  });
+
+  // Stats calculations
+  const totalEmployees = employees.length;
+  const presentEmployees = employees.filter((emp) => emp.status === 'Present').length;
+  const absentEmployees = employees.filter((emp) => emp.status === 'Absent').length;
+  const lateEmployees = employees.filter((emp) => emp.status === 'Late').length;
 
   return (
     <div className="home">
-      {/* Welcome Header */}
+      {/* Header */}
       <div className="wbhead-icons">
-        <h3 className="wbhead"><span className="span">Welcome back</span>, Simbarashe Mahlaulo ☀️</h3>
+        <h3 className="wbhead">
+          <span className="span">Welcome back</span>, Simbarashe Mahlaulo ☀️
+        </h3>
         <div className="wbicons">
-          <i className="ri-settings-line"></i>
-          <i className="ri-mail-line"></i>
-          <i className="ri-notification-2-line"></i>
           <img className="profile" src={profile} alt="Instructor Profile" />
         </div>
       </div>
-      
-      {/* Date and Section Header */}
+
+      {/* Content Section */}
       <div className="home-content">
+        {/* Date and Stats Section */}
         <div className="date-div">
-          <h2><strong>Student Attendance</strong></h2>
-          <p>13 September, 2024 11:23 AM</p>
+          <h2>
+            <strong>Student Attendance</strong>
+          </h2>
+          <p>{new Date().toLocaleString()}</p>
         </div>
 
-        {/* Stats Cards Section */}
         <div className="stats-cards">
           <div className="stats-card">
             <p>Total Students</p>
-            <h3>25</h3>
+            <h3>{totalEmployees}</h3>
           </div>
           <div className="stats-card">
             <p>Present Workforce</p>
-            <h3>13</h3>
+            <h3>{presentEmployees}</h3>
           </div>
           <div className="stats-card">
             <p>Absent Workforce</p>
-            <h3>7</h3>
+            <h3>{absentEmployees}</h3>
           </div>
           <div className="stats-card">
             <p>Late arrivals</p>
-            <h3>5</h3>
+            <h3>{lateEmployees}</h3>
           </div>
         </div>
 
+        {/* Search Bar */}
         <div className="search-filter-bar">
-          <div className="search-filter-elements">
-            <input type="text" className="search-input" placeholder="Search by name, role, department..." />
-            <button className="filter-btn"><i className="ri-filter-3-line"></i>Filter</button>
-            <select className="dept-dropdown">
-              <option>All Departments</option>
-              <option>HR</option>
-              <option>Marketing</option>
-              <option>Development</option>
-            </select>
-            <DatePicker selected={startDate} onChange={(date) => setStartDate(date)} dateFormat="dd MMM, yyyy" className="date-picker" />
-          </div>
+          <input
+            type="text"
+            className="search-input"
+            placeholder="Search by name, role, department..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <button className="filter-btn" onClick={() => setSearchTerm('')}>
+            <i className="ri-filter-3-line"></i>Filter
+          </button>
+          <select
+            className="dept-dropdown"
+            value={filterDept}
+            onChange={(e) => setFilterDept(e.target.value)}
+          >
+            <option>All Departments</option>
+            <option>Design</option>
+            <option>Marketing</option>
+            <option>Development</option>
+          </select>
+          <DatePicker
+            selected={startDate}
+            onChange={(date) => setStartDate(date)}
+            dateFormat="dd MMM, yyyy"
+            className="date-picker"
+          />
         </div>
 
         {/* Attendance Table */}
@@ -106,16 +137,21 @@ export const Home = () => {
             </tr>
           </thead>
           <tbody>
-            {employees.map((employee) => (
+            {filteredEmployees.map((employee) => (
               <tr key={employee.id}>
                 <td>{employee.date}</td>
                 <td>
                   <Link to={`/students/${employee.id}`}>{employee.name}</Link>
                 </td>
-
                 <td>{employee.role}</td>
-                <td><span className="emp-type">{employee.type}</span></td>
-                <td><span className={`status ${employee.status.toLowerCase()}`}>{employee.status}</span></td>
+                <td>
+                  <span className="emp-type">{employee.type}</span>
+                </td>
+                <td>
+                  <span className={`status ${employee.status.toLowerCase()}`}>
+                    {employee.status}
+                  </span>
+                </td>
                 <td>{employee.checkIn}</td>
                 <td>{employee.checkOut}</td>
                 <td>{employee.overtime}</td>

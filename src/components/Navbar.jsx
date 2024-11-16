@@ -15,6 +15,9 @@ export const Navbar = () => {
   // Check if current path matches any of the student sub-pages
   const isStudentPage = location.pathname === '/' || location.pathname.includes('/attendance') || location.pathname.includes('/absence-trends');
 
+  // Check if current path matches the reports and analytics page
+  const isReportsPage = location.pathname === '/reportsandanalytics';
+
   return (
     <div className="sidebar">
       <div className="sidebar-title">
@@ -34,19 +37,18 @@ export const Navbar = () => {
             {/* Conditionally rendering the dropdown menu */}
             {isDropdownOpen && (
               <ul className="dropdown-menu">
-                <li><Link to="/attendance" className="dropdown-link">Attendance</Link></li>
-                <li><Link to="/absence-trends" className="dropdown-link">Absence Trends</Link></li>
+                <li><Link to="/absencetrends" className="dropdown-link">Absence Trends</Link></li>
               </ul>
             )}
           </li>
 
-          <li>
+          <li className={`nav-item ${isReportsPage ? 'active' : ''}`}>
             <Link to="/reportsandanalytics" className="nav-link">
               <i className="ri-bar-chart-line"></i> Reports and Analytics
             </Link>
           </li>
           <li>
-            <Link to="#" className="nav-link">
+            <Link to="/help" className="nav-link">
               <i className="ri-question-line"></i> Help
             </Link>
           </li>

@@ -1,18 +1,23 @@
 /* Sidebar Styling */
 .sidebar {
-  padding-top: 2rem;
-  background-color: #F5F5F5;
-  width: 17%;
+  padding-top: 1rem;
+  width: 20%;
   height: 100vh;
   position: fixed;
   display: flex;
   flex-direction: column;
-  padding: 20px;
+
 }
 
 .sidebar-title {
   margin-left: 1.5rem;
   margin-top: 1.5rem;
+}
+
+nav{
+  background-color: #F5F5F5;
+  height: 100vh;
+  padding: 10px;
 }
 
 /* Navigation links */
@@ -104,3 +109,11 @@ nav ul li {
 .logo{
   margin-left: 129px;
 }
+
+/* Active state for selected links */
+/* Active state for selected links */
+.active .nav-link {
+  background-color: #0747A1;
+  color: #ffffff;
+}
+
